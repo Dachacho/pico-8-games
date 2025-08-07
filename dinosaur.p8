@@ -1,0 +1,91 @@
+pico-8 cartridge // http://www.pico-8.com
+version 42
+__lua__
+player = {
+	w = 8,
+	h = 8,
+	x = 64,
+	dx = 2,
+	y = 90,
+	dy = 0,
+	jump_power = -3.5,
+	gravity = 0.3,
+	on_ground = false
+}
+
+cactus = {
+	w = 8,
+	h = 8,
+	x = 128,
+	y = 120,
+	w = 8,
+	h = 8,
+	dx = -2
+}
+
+game_over = false
+
+function _update()
+	player.dy += player.gravity
+	player.y += player.dy
+	
+	if player.y >= 120 then
+ 	player.y = 120
+		player.dy = 0
+		player.on_ground = true
+	else
+		player.on_ground = false
+	end
+
+  if (btn(0)) then
+   player.x -= player.dx 
+  end
+  if (btn(1)) then 
+   player.x += player.dx
+  end
+  if (btn(2)) and player.on_ground then 
+   player.dy = player.jump_power
+   player.on_ground = false
+  end
+  
+  cactus.x += cactus.dx
+  
+  if cactus.x + cactus.w < 0 then
+  	cactus.x = 128
+  end
+  
+  if player.x < cactus.x + cactus.w
+  	and player.x + player.w > cactus.x
+ 	 and player.y < cactus.y + cactus.h
+  	and player.y + player.h > cactus.y
+  	then game_over = true
+		end
+		
+		if game_over then
+			cactus.dx = 0
+			player.dx = 0
+			player.gravity = 0
+			player.dy = 0
+		end
+		  
+end
+
+function _draw()
+  cls(2)
+  spr(1, player.x, player.y)
+  spr(2, cactus.x, cactus.y)
+  
+  if game_over then
+  	print("you died")
+  end
+end
+	
+__gfx__
+000000000aaaaaa00300063000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00000000aaaaaaaa0360030000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00700700a0aaaa0a0033360300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00077000aaaaaaaa0003300600000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00077000aaaaaaaa0003303300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00700700a0aaaa0a6306333000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00000000aa0000aa0333306000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+000000000aaaaaa00003300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
